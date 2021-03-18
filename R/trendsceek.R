@@ -159,8 +159,11 @@ cellsceek_jpp <- function(j_pp, nrand = 1000, cell_alpha = 0.05, h = NA){
 trendsceek_test <- function(pp, nrand = 1e4, ncores = 1, alpha_env = 0.1 / ifelse(is.numeric(pp[['marks']]), length(pp[['marks']]), ncol(pp[['marks']])), alpha_bh = 0.05, alpha_nom_early = (alpha_bh * 4) / ifelse(ifelse(is.numeric(pp[['marks']]), length(pp[['marks']]), ncol(pp[['marks']])) >= 500, 10, 1)){
     
     ##init parallelization
-    bp_param = BiocParallel::MulticoreParam(workers = ncores)
-
+    if("Windows" %in% Sys.info()){
+        bp_param = BiocParallel::SnowParam(workers = ncores)
+    } else {
+        bp_param = BiocParallel::MulticoreParam(workers = ncores)
+    }
     ##get rstats
     marx = pp[['marks']]
     if(is.numeric(marx)){
